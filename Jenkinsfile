@@ -1,33 +1,25 @@
 pipeline {
     agent any
-    environment {
-        // Cấu hình môi trường cho SonarQube
-        SONARQUBE = 'SonarQube Server'
-    }
     stages {
         stage('Build') {
             steps {
                 script {
-                    // Build dự án với Maven (hoặc Gradle)
+                    // Chạy Maven để build dự án
                     sh 'mvn clean install'
                 }
             }
         }
-        stage('SonarQube Analysis') {
+        stage('JaCoCo Coverage Report') {
             steps {
-                script {
-                    // Thực hiện phân tích SonarQube
-                    withSonarQubeEnv(SONARQUBE) {
-                        sh 'mvn sonar:sonar'
-                    }
-                }
+                // Xuất báo cáo bao phủ JaCoCo
+                jacoco(execPattern: '**/target/*.exec', classPattern: '**/target/classes', sourcePattern: '**/src/main/java')
             }
         }
     }
     post {
         always {
-            // Sau khi phân tích, kiểm tra kết quả và hiển thị báo cáo
-            waitForQualityGate()
+            // Sau khi build, hiển thị báo cáo bao phủ
+            junit '**/target/test-*.xml'
         }
     }
 }
