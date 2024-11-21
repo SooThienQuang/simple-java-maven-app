@@ -3,18 +3,23 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
-            }
-        }
-        stage('Test') { 
-            steps {
-                sh 'mvn test' 
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml' 
+                script {
+                    // Chạy Maven để build dự án
+                    sh 'mvn clean install'
                 }
             }
+        }
+        stage('JaCoCo Coverage Report') {
+            steps {
+                // Xuất báo cáo bao phủ JaCoCo
+                jacoco(execPattern: '**/target/*.exec', classPattern: '**/target/classes', sourcePattern: '**/src/main/java')
+            }
+        }
+    }
+    post {
+        always {
+            // Sau khi build, hiển thị báo cáo bao phủ
+            junit '**/target/test-*.xml'
         }
     }
 }
