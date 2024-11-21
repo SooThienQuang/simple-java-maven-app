@@ -70,6 +70,23 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.7</version> <!-- Chọn phiên bản phù hợp -->
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                        <goal>report</goal>
+                    </goals>
+                    <configuration>
+                        <destFile>${project.build.directory}/jacoco.exec</destFile>
+                        <dataFile>${project.build.directory}/jacoco-datafile</dataFile>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
     </plugins>
   </build>
 </project>
